@@ -704,7 +704,9 @@ silex.model.Element.prototype.initElement = function(element) {
   switch(this.getType(element)) {
     case silex.model.Element.TYPE_CONTAINER:
     case silex.model.Element.TYPE_HTML:
-      defaultStyleObject['background-color'] = 'rgb(255, 255, 255)';
+      if(!this.isSection(element)){
+        defaultStyleObject['background-color'] = 'rgb(255, 255, 255)';
+      }
       break;
 
     case silex.model.Element.TYPE_SECTION:
