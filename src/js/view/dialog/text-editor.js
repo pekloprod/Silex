@@ -169,6 +169,22 @@ silex.view.dialog.TextEditor.prototype.buildUi = function() {
       false,
       this);
 
+  // font color button
+  this.colorInput = document.createElement('input');
+  this.colorInput.type = 'color';
+  this.colorInput.style.position = 'absolute';
+  this.colorInput.style.left = '-999px';
+  document.body.appendChild(this.colorInput);
+
+  var fontColorButton = goog.ui.editor.ToolbarFactory.makeButton(
+      'fontColorButton', 'Text color', '', 'tr-icon tr-foreColor');
+  goog.events.listen(
+      fontColorButton,
+      goog.ui.Component.EventType.ACTION,
+      this.onFontColorClick,
+      false,
+      this);
+
 
   // Specify the buttons to add to the toolbar, using built in default buttons.
   var buttons = [
@@ -178,8 +194,7 @@ silex.view.dialog.TextEditor.prototype.buildUi = function() {
     goog.editor.Command.BOLD,
     goog.editor.Command.ITALIC,
     goog.editor.Command.UNDERLINE,
-    goog.editor.Command.FONT_COLOR,
-    goog.editor.Command.BACKGROUND_COLOR,
+    fontColorButton,
     goog.editor.Command.LINK,
     goog.editor.Command.UNORDERED_LIST,
     goog.editor.Command.ORDERED_LIST,
@@ -188,14 +203,12 @@ silex.view.dialog.TextEditor.prototype.buildUi = function() {
     goog.editor.Command.JUSTIFY_LEFT,
     goog.editor.Command.JUSTIFY_CENTER,
     goog.editor.Command.JUSTIFY_RIGHT,
-    goog.editor.Command.STRIKE_THROUGH,
     goog.editor.Command.REMOVE_FORMAT
   ];
   var myToolbar = goog.ui.editor.DefaultToolbar.makeToolbar(
       buttons,
       /** @type  {!Element} */ (goog.dom.getElementByClass(
           'toolbar', this.element)));
-
   // lorem ipsum button
   var button = goog.ui.editor.ToolbarFactory.makeButton(
       'loremIpsumBtn', 'insert lorem ipsum text', 'Lorem');
@@ -476,6 +489,24 @@ silex.view.dialog.TextEditor.prototype.onInvertColor = function(event) {
   var bgColorArray = goog.color.hexToRgb(goog.color.parse(bgColorStr).hex);
   var invertedArray = bgColorArray.map(color => 255 - color);
   goog.style.setStyle(iframe, 'backgroundColor', goog.color.rgbArrayToHex(invertedArray));
+}
+
+
+/**
+ * user clicked font color button
+ */
+silex.view.dialog.TextEditor.prototype.onFontColorClick = function(event) {
+  // this.colorInput.focus();
+  this.colorInput.click();
+  this.colorInput.onchange = e => {
+    let container = this.textField.getRange().getContainer();
+    if(container.nodeType === goog.dom.NodeType.TEXT) {
+      container = document.createElement('span');
+      this.textField.getRange().surroundContents(container);
+    }
+    container.style.color = this.colorInput.value;
+    this.colorInput.onchange = null;
+  }
 }
 
 
